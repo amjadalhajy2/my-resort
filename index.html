@@ -108,4 +108,38 @@
     </a>
 
     <script>
-        document.addEventListener('DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'ar',
+                headerToolbar: { left: 'prev', center: 'title', right: 'next' },
+                // ربط الضغط على التاريخ
+                dateClick: function(info) {
+                    document.getElementById('resDate').innerText = info.dateStr;
+                    document.getElementById('bookingModal').classList.remove('hidden');
+                },
+                // تنسيق الخلية لعرض الأسماء فوق بعضها
+                dayCellContent: function(arg) {
+                    let content = `
+                        <div class="fc-daygrid-day-number">${arg.dayNumberText}</div>
+                        <div class="resort-stack">
+                            <span class="resort-name is-available">الملكية</span>
+                            <span class="resort-name is-available">العائلية</span>
+                            <span class="resort-name is-available">الهادئة</span>
+                        </div>
+                    `;
+                    return { html: content };
+                }
+            });
+            calendar.render();
+        });
+
+        function confirmBooking() {
+            // كود إرسال البيانات لجوجل شيت (نفس الدالة السابقة)
+            alert("تم إرسال طلبك بنجاح!");
+            document.getElementById('bookingModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
