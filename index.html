@@ -2,50 +2,101 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>حجوزات استراحاتنا</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet' />
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
         body { font-family: 'Cairo', sans-serif; }
-        #calendar { max-width: 900px; margin: 40px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        
+        /* تحسينات الجوال للتقويم */
+        .fc { max-width: 100%; font-size: 0.85rem; background: white; border-radius: 15px; padding: 10px; shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        .fc-toolbar-title { font-size: 1rem !important; font-weight: bold; }
+        .fc-button { background-color: #1e3a8a !important; border: none !important; }
+        
+        /* تنسيق السلايدر */
+        .swiper { width: 100%; height: 220px; border-radius: 20px; }
+        .swiper-slide img { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-slate-50 pb-24">
 
-    <nav class="bg-blue-900 text-white p-6 text-center shadow-lg">
-        <h1 class="text-3xl font-bold">مرحباً بك في استراحاتنا الثلاث</h1>
-        <p class="mt-2 opacity-80">اختر التاريخ المتاح وتواصل معنا للحجز</p>
-    </nav>
+    <header class="bg-indigo-900 text-white pt-8 pb-12 px-6 rounded-b-[40px] text-center shadow-xl">
+        <h1 class="text-2xl font-bold">منتجع الاستراحات الثلاث</h1>
+        <p class="text-sm opacity-80 mt-2">اختر اليوم المناسب واضغط للحجز</p>
+    </header>
 
-    <div class="container mx-auto px-4 py-8">
-        <div id='calendar'></div>
+    <main class="container mx-auto px-4 -mt-8">
+        
+        <div class="swiper mySwiper mb-6 shadow-2xl">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide"><img src="images/1.jpg" alt="استراحة 1"></div>
+                <div class="swiper-slide"><img src="images/2.jpg" alt="استراحة 2"></div>
+                <div class="swiper-slide"><img src="images/3.jpg" alt="استراحة 3"></div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+
+        <div id='calendar' class="shadow-lg"></div>
+
+        <div class="mt-6 flex justify-center gap-6 text-xs font-bold">
+            <div class="flex items-center gap-2">
+                <span class="w-4 h-4 bg-[#1e3a8a] rounded-md shadow-sm"></span> مبيت
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="w-4 h-4 bg-[#10b981] rounded-md shadow-sm"></span> بدون مبيت
+            </div>
+        </div>
+    </main>
+
+    <div class="fixed bottom-6 left-0 right-0 px-6 z-50">
+        <a href="https://wa.me/96894066056" target="_blank" class="bg-green-500 text-white w-full py-4 rounded-2xl shadow-2xl flex items-center justify-center gap-3 font-bold text-lg active:scale-95 transition-transform border-2 border-white">
+            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592z"/></svg>
+            تواصل معنا مباشرة
+        </a>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth',
-          locale: 'ar',
-          headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth' },
-          events: 'https://script.google.com/macros/s/AKfycbxfYAHCdcM9ke_gV8JqV79axJfT-_d23tg_B9brsWyDrSqYN_tmtRxrsKY0s2ZARmZzDw/exec',
-          
-          dateClick: function(info) {
-            const date = info.dateStr;
-            const choice = confirm("هل تريد حجز مبيت في تاريخ " + date + "؟\n(اضغط OK للمبيت - اضغط Cancel لغير المبيت)");
-            const type = choice ? "مبيت" : "بدون مبيت";
-            
-            // رقم الواتساب الخاص بك
-            const whatsappNumber = "9665XXXXXXXX"; 
-            const msg = `السلام عليكم، أرغب في حجز استراحة بتاريخ: ${date} (${type})`;
-            window.open(`https://wa.me/${0096894066056}?text=${encodeURIComponent(msg)}`, '_blank');
-          }
+        // إعداد السلايدر
+        new Swiper(".mySwiper", {
+            pagination: { el: ".swiper-pagination" },
+            autoplay: { delay: 3500 },
+            loop: true
         });
-        calendar.render();
-      });
+
+        // إعداد التقويم وربطه بجوجل شيت الخاص بك
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'ar',
+                height: 'auto',
+                headerToolbar: { left: 'prev,next', center: 'title', right: '' },
+                
+                // رابط جوجل شيت المحدث
+                events: 'https://script.google.com/macros/s/AKfycbxfYAHCdcM9ke_gV8JqV79axJfT-_d23tg_B9brsWyDrSqYN_tmtRxrsKY0s2ZARmZzDw/exec',
+                
+                dateClick: function(info) {
+                    const selectedDate = info.dateStr;
+                    const isOvernight = confirm("تم اختيار تاريخ: " + selectedDate + "\n\nهل ترغب في حجز (مبيت)؟\nاضغط OK للمبيت\nاضغط Cancel لطلب بدون مبيت");
+                    
+                    const type = isOvernight ? "مبيت" : "بدون مبيت";
+                    const phone = "96894066056";
+                    
+                    // رسالة واتساب منسقة
+                    const message = `مرحباً، أود الاستفسار عن حجز استراحة:%0A📅 التاريخ: ${selectedDate}%0A🏠 النوع: ${type}%0Aهل هذا الموعد متاح؟`;
+                    
+                    window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
+                }
+            });
+            calendar.render();
+        });
     </script>
 </body>
 </html>
