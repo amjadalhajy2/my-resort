@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حجوزات استراحاتنا</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+        body { font-family: 'Cairo', sans-serif; }
+        #calendar { max-width: 900px; margin: 40px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <nav class="bg-blue-900 text-white p-6 text-center shadow-lg">
+        <h1 class="text-3xl font-bold">مرحباً بك في استراحاتنا الثلاث</h1>
+        <p class="mt-2 opacity-80">اختر التاريخ المتاح وتواصل معنا للحجز</p>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <div id='calendar'></div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth',
+          locale: 'ar',
+          headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth' },
+          events: 'ضع_هنا_رابط_WEB_APP_الذي_نسخته_من_جوجل',
+          
+          dateClick: function(info) {
+            const date = info.dateStr;
+            const choice = confirm("هل تريد حجز مبيت في تاريخ " + date + "؟\n(اضغط OK للمبيت - اضغط Cancel لغير المبيت)");
+            const type = choice ? "مبيت" : "بدون مبيت";
+            
+            // رقم الواتساب الخاص بك
+            const whatsappNumber = "9665XXXXXXXX"; 
+            const msg = `السلام عليكم، أرغب في حجز استراحة بتاريخ: ${date} (${type})`;
+            window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank');
+          }
+        });
+        calendar.render();
+      });
+    </script>
+</body>
+</html>
