@@ -3,56 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>استراحاتنا الثلاث - فخامة وراحة</title>
+    <title>منتجع الاستراحات الثلاث</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
         body { font-family: 'Cairo', sans-serif; }
+        .fc-daygrid-day-events { display: flex; flex-direction: column; gap: 2px; padding: 2px; }
+        .resort-status { font-size: 0.65rem; padding: 1px 4px; border-radius: 4px; color: white; text-align: center; }
+        .available { background-color: #10b981; } /* أخضر */
+        .booked { background-color: #ef4444; }    /* أحمر */
     </style>
 </head>
-<body class="bg-slate-50">
+<body class="bg-slate-50 pb-20">
 
-    <header class="bg-indigo-900 text-white py-12 px-6 rounded-b-[3rem] text-center shadow-2xl">
-        <img src="images/logo.png" alt="الشعار" class="w-24 h-24 mx-auto mb-4 rounded-full bg-white p-2">
-        <h1 class="text-3xl font-bold">منتجع الاستراحات الثلاث</h1>
-        <p class="mt-2 opacity-80">تجربة فريدة من الخصوصية والجمال</p>
+    <header class="bg-indigo-900 text-white py-10 px-6 rounded-b-[3rem] text-center shadow-2xl">
+        <div class="w-20 h-20 bg-white rounded-full mx-auto mb-4 flex items-center justify-center shadow-inner">
+            <span class="text-indigo-900 font-bold">LOGO</span>
+        </div>
+        <h1 class="text-2xl font-bold">استراحات النخبة</h1>
     </header>
 
-    <main class="p-6 max-w-4xl mx-auto -mt-10">
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-white rounded-3xl shadow-lg overflow-hidden border">
-                <img src="images/resort-a.jpg" class="w-full h-40 object-cover">
-                <div class="p-4 text-center">
-                    <h3 class="font-bold mb-2">استراحة A</h3>
-                    <button class="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm w-full">شاهد الصور</button>
-                </div>
-            </div>
-            </div>
+    <main class="container mx-auto px-4 -mt-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+            <button onclick="window.open('gallery-a.html')" class="bg-white p-4 rounded-2xl shadow-md border-b-4 border-blue-500 font-bold text-xs hover:scale-95 transition">صور استراحة A</button>
+            <button onclick="window.open('gallery-b.html')" class="bg-white p-4 rounded-2xl shadow-md border-b-4 border-green-500 font-bold text-xs hover:scale-95 transition">صور استراحة B</button>
+            <button onclick="window.open('gallery-c.html')" class="bg-white p-4 rounded-2xl shadow-md border-b-4 border-red-500 font-bold text-xs hover:scale-95 transition">صور استراحة C</button>
+            <button onclick="alert('شروطنا: الحفاظ على النظافة، وقت الدخول 2 ظهراً، الخروج 10 صباحاً')" class="bg-gray-800 text-white p-4 rounded-2xl shadow-md font-bold text-xs">الشروط والأحكام</button>
+        </div>
 
-        <div class="space-y-4">
-            <a href="رابط_جوجل_الخاص_بالزبائن" class="block w-full bg-indigo-600 text-white text-center py-5 rounded-2xl font-bold text-xl shadow-xl hover:bg-indigo-700 transition">
-                📅 الانتقال لتقويم الحجز
-            </a>
-
-            <button onclick="document.getElementById('rules').classList.toggle('hidden')" class="block w-full bg-gray-800 text-white text-center py-4 rounded-2xl font-bold shadow-md">
-                📜 الشروط والأحكام
-            </button>
-            
-            <div id="rules" class="hidden bg-white p-6 rounded-2xl border-2 border-dashed border-gray-300 text-sm leading-relaxed">
-                <h4 class="font-bold mb-2">تعليمات الحجز:</h4>
-                <ul class="list-disc pr-5">
-                    <li>وقت الدخول الساعة 2 ظهراً.</li>
-                    <li>يمنع استخدام مكبرات الصوت المزعجة.</li>
-                    <li>الحجز لا يعتبر مؤكداً إلا بعد التواصل معكم.</li>
-                </ul>
-            </div>
+        <div class="bg-white p-4 rounded-[2rem] shadow-xl border border-gray-100">
+            <div id="calendar"></div>
         </div>
     </main>
 
-    <a href="https://wa.me/96894066056" class="fixed bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-2xl flex items-center justify-center">
+    <div id="bookingModal" class="hidden fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm p-8 rounded-[2.5rem] shadow-2xl">
+            <h2 class="text-xl font-bold mb-6 text-center text-indigo-900">طلب حجز جديد</h2>
+            <div class="space-y-4">
+                <div><label class="text-xs mr-2 text-gray-500">التاريخ المختار</label>
+                <input type="text" id="resDate" readonly class="w-full bg-gray-50 p-3 rounded-xl border-none"></div>
+                <select id="resResort" class="w-full border p-3 rounded-xl bg-gray-50"><option>استراحة A</option><option>استراحة B</option><option>استراحة C</option></select>
+                <select id="resType" class="w-full border p-3 rounded-xl bg-gray-50"><option>مبيت</option><option>بدون مبيت</option></select>
+                <input type="text" id="resName" placeholder="اسمك الكريم" class="w-full border p-3 rounded-xl">
+                <input type="tel" id="resPhone" placeholder="رقم الهاتف" class="w-full border p-3 rounded-xl">
+                <div class="flex gap-3 pt-2">
+                    <button onclick="submitToGoogle()" class="bg-indigo-600 text-white flex-1 py-4 rounded-2xl font-bold shadow-lg">تأكيد الحجز</button>
+                    <button onclick="closeModal()" class="bg-gray-100 text-gray-600 flex-1 py-4 rounded-2xl font-bold">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="https://wa.me/96894066056" class="fixed bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-2xl hover:scale-110 transition z-50">
         <svg width="30" height="30" fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592z"/></svg>
     </a>
 
+    <script>
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzLLRJD7qjht_uxuq5G8uAnw-7nKWYpUJlghzJmANSxujwqPaTh-RQ7S_7McRzw3k7KWg/exec';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'ar',
+                height: 'auto',
+                dateClick: function(info) {
+                    document.getElementById('resDate').value = info.dateStr;
+                    document.getElementById('bookingModal').classList.remove('hidden');
+                },
+                dayCellContent: function(arg) {
+                    // هنا سيتم استدعاء البيانات وتلوين (A,B,C) برمجياً
+                    return { html: `<div>${arg.dayNumberText}</div><div class='resort-status available'>A متوفر</div><div class='resort-status available'>B متوفر</div><div class='resort-status available'>C متوفر</div>` };
+                }
+            });
+            calendar.render();
+        });
+
+        function closeModal() { document.getElementById('bookingModal').classList.add('hidden'); }
+
+        function submitToGoogle() {
+            const data = {
+                resort: document.getElementById('resResort').value,
+                date: document.getElementById('resDate').value,
+                type: document.getElementById('resType').value,
+                name: document.getElementById('resName').value,
+                phone: document.getElementById('resPhone').value
+            };
+            // كود إرسال البيانات لـ Google Script
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify(data)
+            }).then(() => {
+                alert('تم إرسال طلبك بنجاح! سنقوم بالتواصل معك قريباً.');
+                closeModal();
+            });
+        }
+    </script>
 </body>
 </html>
