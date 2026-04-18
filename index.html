@@ -2,105 +2,129 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>منتجع الاستراحات الثلاث</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet' />
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
-        body { font-family: 'Cairo', sans-serif; }
-        .fc-daygrid-day-events { display: flex; flex-direction: column; gap: 2px; padding: 2px; }
-        .resort-status { font-size: 0.65rem; padding: 1px 4px; border-radius: 4px; color: white; text-align: center; }
-        .available { background-color: #10b981; } /* أخضر */
-        .booked { background-color: #ef4444; }    /* أحمر */
+        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
+        
+        /* تحسين التقويم للهاتف */
+        .fc { background: white; border-radius: 20px; overflow: hidden; border: none !important; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
+        .fc-header-toolbar { padding: 15px !important; margin-bottom: 0 !important; background: #1e293b; color: white; }
+        .fc-daygrid-day-number { font-size: 0.9rem; font-weight: bold; color: #64748b; padding: 8px !important; }
+        .fc-col-header-cell { background: #f1f5f9; padding: 10px 0 !important; font-size: 0.8rem; }
+        
+        /* تصميم رموز الاستراحات داخل المربع */
+        .resort-indicator {
+            display: flex; justify-content: center; gap: 2px; margin-top: 2px;
+        }
+        .dot {
+            width: 18px; height: 18px; border-radius: 4px; display: flex;
+            align-items: center; justify-content: center; font-size: 0.6rem;
+            color: white; font-weight: bold;
+        }
+        .bg-available { background-color: #22c55e; } /* أخضر */
+        .bg-booked { background-color: #ef4444; }    /* أحمر */
     </style>
 </head>
-<body class="bg-slate-50 pb-20">
+<body class="pb-24">
 
-    <header class="bg-indigo-900 text-white py-10 px-6 rounded-b-[3rem] text-center shadow-2xl">
-        <div class="w-20 h-20 bg-white rounded-full mx-auto mb-4 flex items-center justify-center shadow-inner">
-            <span class="text-indigo-900 font-bold">LOGO</span>
+    <div class="relative bg-slate-900 pt-10 pb-20 px-6 rounded-b-[3.5rem] shadow-2xl overflow-hidden text-center">
+        <div class="absolute top-0 left-0 w-full h-full opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+        <div class="relative z-10">
+            <div class="w-20 h-20 bg-white rounded-2xl mx-auto mb-4 flex items-center justify-center rotate-3 shadow-xl">
+                <span class="text-slate-900 text-3xl font-black -rotate-3">3R</span>
+            </div>
+            <h1 class="text-2xl font-bold text-white tracking-tight">منتجع الاستراحات الثلاث</h1>
+            <p class="text-slate-400 text-xs mt-2">عالم من الخصوصية في انتظارك</p>
         </div>
-        <h1 class="text-2xl font-bold">استراحات النخبة</h1>
-    </header>
+    </div>
 
-    <main class="container mx-auto px-4 -mt-8">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-            <button onclick="window.open('gallery-a.html')" class="bg-white p-4 rounded-2xl shadow-md border-b-4 border-blue-500 font-bold text-xs hover:scale-95 transition">صور استراحة A</button>
-            <button onclick="window.open('gallery-b.html')" class="bg-white p-4 rounded-2xl shadow-md border-b-4 border-green-500 font-bold text-xs hover:scale-95 transition">صور استراحة B</button>
-            <button onclick="window.open('gallery-c.html')" class="bg-white p-4 rounded-2xl shadow-md border-b-4 border-red-500 font-bold text-xs hover:scale-95 transition">صور استراحة C</button>
-            <button onclick="alert('شروطنا: الحفاظ على النظافة، وقت الدخول 2 ظهراً، الخروج 10 صباحاً')" class="bg-gray-800 text-white p-4 rounded-2xl shadow-md font-bold text-xs">الشروط والأحكام</button>
+    <main class="container mx-auto px-4 -mt-10 relative z-20">
+        <div class="grid grid-cols-2 gap-3 mb-6">
+            <button class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center gap-2 active:scale-95 transition">
+                <span class="text-2xl">📸</span><span class="text-xs font-bold text-slate-700">معرض الصور</span>
+            </button>
+            <button onclick="document.getElementById('rulesModal').classList.remove('hidden')" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center gap-2 active:scale-95 transition">
+                <span class="text-2xl">📜</span><span class="text-xs font-bold text-slate-700">الشروط</span>
+            </button>
         </div>
 
-        <div class="bg-white p-4 rounded-[2rem] shadow-xl border border-gray-100">
-            <div id="calendar"></div>
+        <div class="flex justify-center gap-4 mb-4 text-[10px] font-bold text-slate-500 bg-white p-3 rounded-full shadow-sm">
+            <div class="flex items-center gap-1"><span class="w-3 h-3 bg-green-500 rounded-sm"></span> متوفر</div>
+            <div class="flex items-center gap-1"><span class="w-3 h-3 bg-red-500 rounded-sm"></span> محجوز</div>
+            <span class="text-slate-300">|</span>
+            <span>A: الملكية</span> <span>B: العائلية</span> <span>C: الهادئة</span>
         </div>
+
+        <div id="calendar"></div>
     </main>
 
-    <div id="bookingModal" class="hidden fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm p-8 rounded-[2.5rem] shadow-2xl">
-            <h2 class="text-xl font-bold mb-6 text-center text-indigo-900">طلب حجز جديد</h2>
+    <div id="bookingModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] flex items-end md:items-center justify-center">
+        <div class="bg-white w-full max-w-md p-8 rounded-t-[2.5rem] md:rounded-[2.5rem] shadow-2xl animate-slide-up">
+            <div class="w-12 h-1 bg-slate-200 mx-auto mb-6 rounded-full md:hidden"></div>
+            <h2 class="text-xl font-bold mb-6 text-slate-800">تفاصيل الحجز</h2>
+            
             <div class="space-y-4">
-                <div><label class="text-xs mr-2 text-gray-500">التاريخ المختار</label>
-                <input type="text" id="resDate" readonly class="w-full bg-gray-50 p-3 rounded-xl border-none"></div>
-                <select id="resResort" class="w-full border p-3 rounded-xl bg-gray-50"><option>استراحة A</option><option>استراحة B</option><option>استراحة C</option></select>
-                <select id="resType" class="w-full border p-3 rounded-xl bg-gray-50"><option>مبيت</option><option>بدون مبيت</option></select>
-                <input type="text" id="resName" placeholder="اسمك الكريم" class="w-full border p-3 rounded-xl">
-                <input type="tel" id="resPhone" placeholder="رقم الهاتف" class="w-full border p-3 rounded-xl">
-                <div class="flex gap-3 pt-2">
-                    <button onclick="submitToGoogle()" class="bg-indigo-600 text-white flex-1 py-4 rounded-2xl font-bold shadow-lg">تأكيد الحجز</button>
-                    <button onclick="closeModal()" class="bg-gray-100 text-gray-600 flex-1 py-4 rounded-2xl font-bold">إلغاء</button>
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    <p class="text-xs text-slate-500">التاريخ المختار</p>
+                    <p id="resDate" class="font-bold text-slate-800"></p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <select id="resResort" class="w-full bg-slate-50 p-4 rounded-2xl border border-slate-100 text-sm focus:ring-2 ring-indigo-500">
+                        <option>استراحة A</option><option>استراحة B</option><option>استراحة C</option>
+                    </select>
+                    <select id="resType" class="w-full bg-slate-50 p-4 rounded-2xl border border-slate-100 text-sm focus:ring-2 ring-indigo-500">
+                        <option>مبيت</option><option>بدون مبيت</option>
+                    </select>
+                </div>
+
+                <input type="text" id="resName" placeholder="الاسم الكامل" class="w-full bg-slate-50 p-4 rounded-2xl border border-slate-100 text-sm">
+                <input type="tel" id="resPhone" placeholder="رقم الهاتف" class="w-full bg-slate-50 p-4 rounded-2xl border border-slate-100 text-sm">
+                
+                <div class="flex gap-3 pt-4">
+                    <button onclick="submitBooking()" class="bg-indigo-600 text-white flex-[2] py-4 rounded-2xl font-bold shadow-lg shadow-indigo-200 active:scale-95 transition">تأكيد الطلب</button>
+                    <button onclick="closeModal()" class="bg-slate-100 text-slate-500 flex-1 py-4 rounded-2xl font-bold active:scale-95 transition">إلغاء</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <a href="https://wa.me/96894066056" class="fixed bottom-6 right-6 bg-green-500 text-white p-4 rounded-full shadow-2xl hover:scale-110 transition z-50">
-        <svg width="30" height="30" fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592z"/></svg>
+    <a href="https://wa.me/96894066056" class="fixed bottom-6 right-6 bg-green-500 text-white p-5 rounded-full shadow-2xl hover:scale-110 active:scale-90 transition-all z-50 border-4 border-white">
+        <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326z"/></svg>
     </a>
 
     <script>
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzLLRJD7qjht_uxuq5G8uAnw-7nKWYpUJlghzJmANSxujwqPaTh-RQ7S_7McRzw3k7KWg/exec';
-
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 locale: 'ar',
-                height: 'auto',
+                contentHeight: 'auto',
+                headerToolbar: { left: 'prev', center: 'title', right: 'next' },
                 dateClick: function(info) {
-                    document.getElementById('resDate').value = info.dateStr;
+                    document.getElementById('resDate').innerText = info.dateStr;
                     document.getElementById('bookingModal').classList.remove('hidden');
                 },
                 dayCellContent: function(arg) {
-                    // هنا سيتم استدعاء البيانات وتلوين (A,B,C) برمجياً
-                    return { html: `<div>${arg.dayNumberText}</div><div class='resort-status available'>A متوفر</div><div class='resort-status available'>B متوفر</div><div class='resort-status available'>C متوفر</div>` };
+                    // تصميم الرموز A B C داخل كل يوم
+                    let content = `<div class="fc-daygrid-day-number">${arg.dayNumberText}</div>`;
+                    content += `<div class="resort-indicator">
+                        <span class="dot bg-available">A</span>
+                        <span class="dot bg-available">B</span>
+                        <span class="dot bg-available">C</span>
+                    </div>`;
+                    return { html: content };
                 }
             });
             calendar.render();
         });
 
         function closeModal() { document.getElementById('bookingModal').classList.add('hidden'); }
-
-        function submitToGoogle() {
-            const data = {
-                resort: document.getElementById('resResort').value,
-                date: document.getElementById('resDate').value,
-                type: document.getElementById('resType').value,
-                name: document.getElementById('resName').value,
-                phone: document.getElementById('resPhone').value
-            };
-            // كود إرسال البيانات لـ Google Script
-            fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify(data)
-            }).then(() => {
-                alert('تم إرسال طلبك بنجاح! سنقوم بالتواصل معك قريباً.');
-                closeModal();
-            });
-        }
     </script>
 </body>
 </html>
