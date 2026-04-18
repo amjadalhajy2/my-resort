@@ -9,122 +9,103 @@
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
-        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
+        body { font-family: 'Cairo', sans-serif; background-color: #f1f5f9; }
         
-        /* تحسين التقويم للهاتف */
-        .fc { background: white; border-radius: 20px; overflow: hidden; border: none !important; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
-        .fc-header-toolbar { padding: 15px !important; margin-bottom: 0 !important; background: #1e293b; color: white; }
-        .fc-daygrid-day-number { font-size: 0.9rem; font-weight: bold; color: #64748b; padding: 8px !important; }
-        .fc-col-header-cell { background: #f1f5f9; padding: 10px 0 !important; font-size: 0.8rem; }
+        /* تنسيق التقويم */
+        .fc { background: white; border-radius: 24px; overflow: hidden; border: none !important; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .fc-header-toolbar { padding: 20px !important; background: #1e1b4b; color: white; margin-bottom: 0 !important; }
+        .fc-toolbar-title { font-size: 1.1rem !important; font-weight: bold; }
+        .fc-daygrid-day-number { font-weight: bold; color: #1e293b; padding: 5px !important; display: block; text-align: center; width: 100%; }
         
-        /* تصميم رموز الاستراحات داخل المربع */
-        .resort-indicator {
-            display: flex; justify-content: center; gap: 2px; margin-top: 2px;
+        /* حاوية أسماء الاستراحات */
+        .resort-stack {
+            display: flex;
+            flex-direction: column; /* ترتيب فوق بعض */
+            gap: 2px;
+            padding: 2px;
+            margin-top: 2px;
         }
-        .dot {
-            width: 18px; height: 18px; border-radius: 4px; display: flex;
-            align-items: center; justify-content: center; font-size: 0.6rem;
-            color: white; font-weight: bold;
+        
+        /* بطاقة اسم الاستراحة */
+        .resort-name {
+            font-size: 0.6rem; /* حجم خط مناسب للهاتف */
+            padding: 2px 1px;
+            border-radius: 3px;
+            text-align: center;
+            font-weight: 700;
+            display: block;
+            border: 1px solid transparent;
         }
-        .bg-available { background-color: #22c55e; } /* أخضر */
-        .bg-booked { background-color: #ef4444; }    /* أحمر */
+
+        /* ألوان الحالة */
+        .is-available { background-color: #dcfce7; color: #166534; border-color: #bbf7d0; }
+        .is-booked { background-color: #fee2e2; color: #991b1b; border-color: #fecaca; }
+
+        /* تعديل ارتفاع مربعات التقويم لعدم التداخل */
+        .fc-daygrid-day-frame { min-height: 90px !important; }
+        
+        /* إخفاء الأزرار الزائدة في الهاتف */
+        @media (max-width: 640px) {
+            .fc-toolbar-chunk { display: flex; gap: 2px; }
+            .fc-button { padding: 4px 8px !important; font-size: 0.8rem !important; }
+        }
     </style>
 </head>
-<body class="pb-24">
+<body class="pb-28">
 
-    <div class="relative bg-slate-900 pt-10 pb-20 px-6 rounded-b-[3.5rem] shadow-2xl overflow-hidden text-center">
-        <div class="absolute top-0 left-0 w-full h-full opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+    <header class="bg-indigo-950 pt-12 pb-20 px-6 rounded-b-[3.5rem] shadow-2xl text-center relative">
         <div class="relative z-10">
-            <div class="w-20 h-20 bg-white rounded-2xl mx-auto mb-4 flex items-center justify-center rotate-3 shadow-xl">
-                <span class="text-slate-900 text-3xl font-black -rotate-3">3R</span>
+            <div class="w-20 h-20 bg-white rounded-[2rem] mx-auto mb-4 flex items-center justify-center shadow-xl border-4 border-indigo-500/20">
+                <span class="text-indigo-900 text-3xl font-black">3R</span>
             </div>
-            <h1 class="text-2xl font-bold text-white tracking-tight">منتجع الاستراحات الثلاث</h1>
-            <p class="text-slate-400 text-xs mt-2">عالم من الخصوصية في انتظارك</p>
+            <h1 class="text-2xl font-bold text-white uppercase tracking-wider">منتجع الاستراحات الثلاث</h1>
+            <p class="text-indigo-300 text-xs mt-2 font-medium">اختر استراحتك المفضلة واحجز الآن</p>
         </div>
-    </div>
+    </header>
 
     <main class="container mx-auto px-4 -mt-10 relative z-20">
-        <div class="grid grid-cols-2 gap-3 mb-6">
-            <button class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center gap-2 active:scale-95 transition">
-                <span class="text-2xl">📸</span><span class="text-xs font-bold text-slate-700">معرض الصور</span>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            <button class="bg-white p-4 rounded-3xl shadow-sm flex flex-col items-center gap-2 border border-indigo-50">
+                <span class="text-2xl">🏞️</span><span class="text-[10px] font-bold text-slate-600">صور الاستراحات</span>
             </button>
-            <button onclick="document.getElementById('rulesModal').classList.remove('hidden')" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center gap-2 active:scale-95 transition">
-                <span class="text-2xl">📜</span><span class="text-xs font-bold text-slate-700">الشروط</span>
+            <button onclick="document.getElementById('rulesModal').classList.toggle('hidden')" class="bg-white p-4 rounded-3xl shadow-sm flex flex-col items-center gap-2 border border-indigo-50">
+                <span class="text-2xl">📜</span><span class="text-[10px] font-bold text-slate-600">الشروط</span>
             </button>
-        </div>
-
-        <div class="flex justify-center gap-4 mb-4 text-[10px] font-bold text-slate-500 bg-white p-3 rounded-full shadow-sm">
-            <div class="flex items-center gap-1"><span class="w-3 h-3 bg-green-500 rounded-sm"></span> متوفر</div>
-            <div class="flex items-center gap-1"><span class="w-3 h-3 bg-red-500 rounded-sm"></span> محجوز</div>
-            <span class="text-slate-300">|</span>
-            <span>A: الملكية</span> <span>B: العائلية</span> <span>C: الهادئة</span>
         </div>
 
         <div id="calendar"></div>
     </main>
 
-    <div id="bookingModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] flex items-end md:items-center justify-center">
-        <div class="bg-white w-full max-w-md p-8 rounded-t-[2.5rem] md:rounded-[2.5rem] shadow-2xl animate-slide-up">
-            <div class="w-12 h-1 bg-slate-200 mx-auto mb-6 rounded-full md:hidden"></div>
-            <h2 class="text-xl font-bold mb-6 text-slate-800">تفاصيل الحجز</h2>
-            
+    <div id="bookingModal" class="hidden fixed inset-0 bg-indigo-950/80 backdrop-blur-md z-[100] flex items-end md:items-center justify-center">
+        <div class="bg-white w-full max-w-md p-8 rounded-t-[3rem] md:rounded-[3rem] shadow-2xl">
+            <h2 class="text-xl font-bold mb-6 text-indigo-900 border-r-4 border-indigo-600 pr-3">تفاصيل الطلب</h2>
             <div class="space-y-4">
-                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                    <p class="text-xs text-slate-500">التاريخ المختار</p>
-                    <p id="resDate" class="font-bold text-slate-800"></p>
+                <div class="bg-indigo-50 p-4 rounded-2xl">
+                    <p class="text-[10px] text-indigo-400 font-bold uppercase">التاريخ المختار</p>
+                    <p id="resDate" class="font-bold text-indigo-900"></p>
                 </div>
-                
-                <div class="grid grid-cols-2 gap-3">
-                    <select id="resResort" class="w-full bg-slate-50 p-4 rounded-2xl border border-slate-100 text-sm focus:ring-2 ring-indigo-500">
-                        <option>استراحة A</option><option>استراحة B</option><option>استراحة C</option>
-                    </select>
-                    <select id="resType" class="w-full bg-slate-50 p-4 rounded-2xl border border-slate-100 text-sm focus:ring-2 ring-indigo-500">
-                        <option>مبيت</option><option>بدون مبيت</option>
-                    </select>
-                </div>
-
-                <input type="text" id="resName" placeholder="الاسم الكامل" class="w-full bg-slate-50 p-4 rounded-2xl border border-slate-100 text-sm">
-                <input type="tel" id="resPhone" placeholder="رقم الهاتف" class="w-full bg-slate-50 p-4 rounded-2xl border border-slate-100 text-sm">
-                
+                <select id="resResort" class="w-full bg-slate-50 p-4 rounded-2xl border-none ring-1 ring-slate-200 focus:ring-2 focus:ring-indigo-600">
+                    <option>الاستراحة الملكية</option>
+                    <option>الاستراحة العائلية</option>
+                    <option>استراحة الهدوء</option>
+                </select>
+                <select id="resType" class="w-full bg-slate-50 p-4 rounded-2xl border-none ring-1 ring-slate-200">
+                    <option>مبيت</option>
+                    <option>بدون مبيت</option>
+                </select>
+                <input type="text" id="resName" placeholder="الاسم الكامل" class="w-full bg-slate-50 p-4 rounded-2xl border-none ring-1 ring-slate-200">
+                <input type="tel" id="resPhone" placeholder="رقم الهاتف" class="w-full bg-slate-50 p-4 rounded-2xl border-none ring-1 ring-slate-200">
                 <div class="flex gap-3 pt-4">
-                    <button onclick="submitBooking()" class="bg-indigo-600 text-white flex-[2] py-4 rounded-2xl font-bold shadow-lg shadow-indigo-200 active:scale-95 transition">تأكيد الطلب</button>
-                    <button onclick="closeModal()" class="bg-slate-100 text-slate-500 flex-1 py-4 rounded-2xl font-bold active:scale-95 transition">إلغاء</button>
+                    <button onclick="confirmBooking()" class="bg-indigo-600 text-white flex-[2] py-4 rounded-2xl font-bold shadow-lg active:scale-95 transition">إرسال الطلب</button>
+                    <button onclick="document.getElementById('bookingModal').classList.add('hidden')" class="bg-slate-100 text-slate-400 flex-1 py-4 rounded-2xl font-bold">إلغاء</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <a href="https://wa.me/96894066056" class="fixed bottom-6 right-6 bg-green-500 text-white p-5 rounded-full shadow-2xl hover:scale-110 active:scale-90 transition-all z-50 border-4 border-white">
+    <a href="https://wa.me/96894066056" class="fixed bottom-6 right-6 bg-green-500 text-white p-5 rounded-full shadow-2xl border-4 border-white z-50">
         <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326z"/></svg>
     </a>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                locale: 'ar',
-                contentHeight: 'auto',
-                headerToolbar: { left: 'prev', center: 'title', right: 'next' },
-                dateClick: function(info) {
-                    document.getElementById('resDate').innerText = info.dateStr;
-                    document.getElementById('bookingModal').classList.remove('hidden');
-                },
-                dayCellContent: function(arg) {
-                    // تصميم الرموز A B C داخل كل يوم
-                    let content = `<div class="fc-daygrid-day-number">${arg.dayNumberText}</div>`;
-                    content += `<div class="resort-indicator">
-                        <span class="dot bg-available">A</span>
-                        <span class="dot bg-available">B</span>
-                        <span class="dot bg-available">C</span>
-                    </div>`;
-                    return { html: content };
-                }
-            });
-            calendar.render();
-        });
-
-        function closeModal() { document.getElementById('bookingModal').classList.add('hidden'); }
-    </script>
-</body>
-</html>
+        document.addEventListener('DOMContentLoaded
